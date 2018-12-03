@@ -1,0 +1,53 @@
+version: "2"
+
+services:
+  device-failure-prediction:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MODE=dev
+      - FLASK_ENV=development
+      - UI_PORT=9090
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+    volumes:
+      - .:/device-failure-prediction
+    depends_on:
+      - mongo
+      - mongo-express
+      - elasticsearch
+    ports:
+      - "9090:9090"
+
+# Mongo DB
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: global
+    volumes:
+      - ./data/mongo:/data/db
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+
+  elasticsearch:
+    image: elasticsearch:5-alpine
+    restart: unless-stopped
+    command: elasticsearch -Etransport.host=127.0.0.1
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - ./data/es:/usr/share/elasticsearch/data
