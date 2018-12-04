@@ -6,9 +6,6 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - MODE=dev
-      - FLASK_ENV=development
-      - UI_PORT=9090
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=example
     volumes:
@@ -18,7 +15,7 @@ services:
       - mongo-express
       - elasticsearch
     ports:
-      - "9090:9090"
+      - "8080:8080"
 
 # Mongo DB
   mongo:

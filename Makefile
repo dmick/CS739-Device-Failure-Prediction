@@ -11,4 +11,4 @@ init:
 	pip install -r requirements.txt
 
 run:
-	cd app; python main.py
+	pecan serve config.py
