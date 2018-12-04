@@ -1,5 +1,5 @@
 from pecan import conf  # noqa
-from mongoengine import connect
+from mongoengine import connect as mongo_connect
 
 
 def init_model():
@@ -14,5 +14,5 @@ def init_model():
     see https://pecan.readthedocs.io/en/latest/databases.html
     """
     # TODO: Read from app-config
-    connect(db='global', host='devicefailureprediction_mongo_1', username='test-user',
-            password='test-password', alias='global')
+    mongo_connect(host='localhost', port=27017, username='test-user',
+                  password='test-password', db='global', alias='global')

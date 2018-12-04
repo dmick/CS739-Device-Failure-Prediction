@@ -1,16 +1,24 @@
 from pecan import expose, redirect
-from webob.exc import status_map
+from cs739devicefailureprediction.model.HostInfo import register_host, BLACKLISTED_HOST_INFO_FIELDS
+
+status_map = {
+    500: 'Internal Server Error!',
+    404: 'Page Not Found!',
+    401: 'Unauthorized!',
+}
 
 
 class RootController(object):
+    @expose(method='POST', template='json', route='register-host')
+    def register_host_info(self):
+        saved_host_info = register_host()
+        for field in BLACKLISTED_HOST_INFO_FIELDS:
+            saved_host_info.pop(field, None)
+        return saved_host_info
 
-    @expose(generic=True, template='index.html')
-    def index(self):
-        return dict()
-
-    @index.when(method='POST')
-    def index_post(self, q):
-        redirect('https://pecan.readthedocs.io/en/latest/search.html?q=%s' % q)
+    @expose(method='POST', template='json', route='store-device-metrics')
+    def store_metrics(self):
+        return {'msg': 'Metrics stored Successfully!'}
 
     @expose('error.html')
     def error(self, status):
