@@ -3,8 +3,7 @@ from cs739devicefailureprediction import model
 
 
 def setup_app(config):
-
-    model.init_model()
+    model.init_model(config)
     app_conf = dict(config.app)
 
     return make_app(

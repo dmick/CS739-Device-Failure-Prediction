@@ -41,7 +41,7 @@ logging = {
             '()': 'pecan.log.ColorFormatter',
             'format': ('%(asctime)s [%(padded_color_levelname)s] [%(name)s]'
                        '[%(threadName)s] %(message)s'),
-        '__force_dict__': True
+            '__force_dict__': True
         }
     }
 }
@@ -52,3 +52,19 @@ logging = {
 #
 # All configurations are accessible at::
 # pecan.conf
+
+custom_config = {
+    'mongo_config': {
+        'host': 'localhost',
+        'port': 27017,
+        'global_db_username': 'test-user',
+        'global_db_password': 'test-password',
+    },
+    'es_config': {
+        'node1': {
+            'host': 'localhost',
+            'port': 9200,
+        },
+    },
+    'cipher_secret': b'-lQIXhsB87t-6WGXte9brqGZa0WpNsYtgwbx0xEPQcU='
+}
