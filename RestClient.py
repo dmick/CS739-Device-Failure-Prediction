@@ -5,7 +5,7 @@ import subprocess
 
 
 def get_smartctl_data(disk):
-    result = subprocess.run(['/usr/local/sbin/smartctl', '-x', '--json', 'disk0s2'], stdout=subprocess.PIPE)
+    result = subprocess.run(['/usr/local/sbin/smartctl', '-x', '--json', disk], stdout=subprocess.PIPE)
     return result.stdout
 
 
