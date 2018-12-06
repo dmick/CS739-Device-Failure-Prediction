@@ -47,7 +47,7 @@ def register_host(should_return_raw=False):
 
 
 def fetch_host_by_secret(client_secret, should_return_raw=False):
-    secret_base_text = str.encode(cipher.decrypt(client_secret))
+    secret_base_text = cipher.decrypt(client_secret).decode()
     secret_payload = json.loads(secret_base_text)
     host_id = secret_payload['host_id']
     host = HostInfo.objects(host_id=host_id)[0]
