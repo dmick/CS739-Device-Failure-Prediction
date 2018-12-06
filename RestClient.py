@@ -23,9 +23,20 @@ def store_smartctl_metric(base_url, host_id, host_secret, disk):
     pprint.pprint(response.json())
 
 
-if __name__ == '__main__':
+def post_metrics():
     base_url = 'http://localhost:8080/'
     host_id = '5c6ec02f-4db2-4136-ab78-1cb86c68bde0'
     host_secret = 'gAAAAABcByEyUpXumdwtAxl5QyTPFTLTKN0nBcS9Z_ETb3Z9mAnvr46C-w-gXvkwtiVXyPooSr4fMqQqA-IQjFyTfg3LKQwP4qLvgKWMtH1bt8LV74EiEgOIrsaaXGrWBPF0-xAi0fmuoMz-lvPMVdw8rnHNGw9lewpFdxfl_aOemoplpKMowkfnwg5t6RWhyt0Mtmjspd5qZOrwYUHcXsQNcTWEe-B2mg=='
     disk = 'disk0s2'
     store_smartctl_metric(base_url, host_id, host_secret, disk)
+
+
+def register_host():
+    base_url = 'http://localhost:8080/'
+    response = requests.post(base_url + 'register-host')
+    print('Response from server is: ')
+    pprint.pprint(response.json())
+
+
+if __name__ == '__main__':
+    register_host()
