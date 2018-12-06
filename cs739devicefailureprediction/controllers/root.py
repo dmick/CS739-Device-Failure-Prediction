@@ -29,7 +29,7 @@ class RootController(object):
         host = host_info_service.fetch_host_by_secret(str.encode(host_secret))
         if host is None or host['host_id'] != host_id:
             pecan.abort(401)
-        body = json.loads(body)
+        body = json.loads(body.decode())
         response = {}
         es_response = es.index(index="test-index", doc_type='test-doc', body=body)
         for field in DEVICE_STORE_FIELDS_TO_SEND:
