@@ -3,7 +3,7 @@
 ### Setup python3 virtual environment using:
 
 ```
-virtualenv -p python3 env
+virtualenv -p python2.7 env
 . env/bin/activate
 ```
 Always remember to activate the environment, before installing any dependencies or starting webserver.
