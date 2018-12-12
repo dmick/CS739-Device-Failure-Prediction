@@ -33,7 +33,8 @@ class RootController(object):
             pecan.abort(401)
         body = json.loads(body.decode())
         body['host_id'] = host_id
-        body['server_ts'] = (datetime.datetime.utcnow() - EPOCH).total_seconds()
+        seconds_since_epoch = (datetime.datetime.utcnow() - EPOCH).total_seconds()
+        body['server_ts'] = seconds_since_epoch * 1000
         response = {}
         es_response = es.index(index="test-index", doc_type='test-doc', body=body)
         for field in DEVICE_STORE_FIELDS_TO_SEND:
