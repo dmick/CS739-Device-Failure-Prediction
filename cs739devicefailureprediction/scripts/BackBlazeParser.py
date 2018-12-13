@@ -30,9 +30,9 @@ class BackBlazeParser:
         if self.base_url is None:
             self.base_url = 'http://localhost:8080/'
         if self.host_id is None:
-            host_id = '5c6ec02f-4db2-4136-ab78-1cb86c68bde0'
+            self.host_id = 'b0c5b707-0442-4c5b-a225-79cda7c04db1'
         if self.host_secret is None:
-            self.host_secret = 'gAAAAABcByEyUpXumdwtAxl5QyTPFTLTKN0nBcS9Z_ETb3Z9mAnvr46C-w-gXvkwtiVXyPooSr4fMqQqA-IQjFyTfg3LKQwP4qLvgKWMtH1bt8LV74EiEgOIrsaaXGrWBPF0-xAi0fmuoMz-lvPMVdw8rnHNGw9lewpFdxfl_aOemoplpKMowkfnwg5t6RWhyt0Mtmjspd5qZOrwYUHcXsQNcTWEe-B2mg=='
+            self.host_secret = 'gAAAAABcEuDPCe_jptctme269UF3OCySOWrhbcI4d5IdG-uYpZIiLOCb5QKQV2hlpiAG7rK_ll0fPiucDUqMkrW1Z7UUfrIHe-KqCGUy2CMHPxM2QV1gFNMZE4AoPNEH6UgdphjBeO5tJZQ_oewvU_e74WyzwsUblnIDT3jiw-C7ipSnK3W-H8MXEzx-sESlQjjsdHotw54PJ_uDsVjYurvaBUktDS9Udg=='
         self.headers = {
             'Content-type': 'application/json',
             'host_id': self.host_id,
@@ -54,12 +54,14 @@ class BackBlazeParser:
 
     def parse_all_directories(self, dirs):
         for dir_path in dirs:
+	    print('Processing Directory: '+str(dir_path))
             all_files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))]
             csv_files = [os.path.join(dir_path, f) for f in all_files if f.endswith('.csv')]
             for file_name in csv_files:
                 self.parse_csv(file_name)
 
     def parse_csv(self, file_name):
+	print('\tProcessing File: '+str(file_name))
         data = pd.read_csv(file_name)
         data.head()
         for index, row in data.iterrows():
@@ -105,4 +107,4 @@ class BackBlazeParser:
 
 if __name__ == '__main__':
     parser = BackBlazeParser()
-    parser.parse_root_dir('/Users/Maharia/Dev/gitlab/CS739-Device-Failure-Prediction/data/backblaze')
+    parser.parse_root_dir('/home/pkapoor/CS739-Device-Failure-Prediction/data/backblaze')

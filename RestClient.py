@@ -48,4 +48,4 @@ def register_host():
 
 
 if __name__ == '__main__':
-    post_metrics()
+    register_host()
