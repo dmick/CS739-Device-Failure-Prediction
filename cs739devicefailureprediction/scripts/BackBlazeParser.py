@@ -6,6 +6,8 @@ import pandas as pd
 import os
 import pprint
 
+EPOCH = datetime(1970, 1, 1, 0, 0, 0)
+
 json_skeleton = {
     "model_family": "Apple SD/SM/TS...E/F/G SSDs",
     "model_name": "APPLE SSD SM0256G",
@@ -54,14 +56,14 @@ class BackBlazeParser:
 
     def parse_all_directories(self, dirs):
         for dir_path in dirs:
-	    print('Processing Directory: '+str(dir_path))
+            print('Processing Directory: ' + str(dir_path))
             all_files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))]
             csv_files = [os.path.join(dir_path, f) for f in all_files if f.endswith('.csv')]
             for file_name in csv_files:
                 self.parse_csv(file_name)
 
     def parse_csv(self, file_name):
-	print('\tProcessing File: '+str(file_name))
+        print('\tProcessing File: ' + str(file_name))
         data = pd.read_csv(file_name)
         data.head()
         for index, row in data.iterrows():
@@ -94,7 +96,8 @@ class BackBlazeParser:
             payload['hints']['is_backblaze'] = True
             dt = row["date"]
             d = datetime(int(dt[:4]), int(dt[5:7]), int(dt[8:11]))
-            payload['hints']['backblaze_ts'] = int(round(d.timestamp() * 1000))
+            seconds_since_epoch = (d - EPOCH).total_seconds()
+            payload['hints']['backblaze_ts'] = seconds_since_epoch * 1000
             failure_flag = row["failure"]
             # print(type(failure_flag))
             if failure_flag == 1:
