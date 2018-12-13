@@ -3,10 +3,12 @@ import requests
 import pprint
 import subprocess
 
+START_TEST_TS = 1544400000001
+
 
 def get_smartctl_data(disk):
     result = subprocess.run(['/usr/local/sbin/smartctl', '-x', '--json', disk], stdout=subprocess.PIPE)
-    return result.stdout
+    return json.loads(result.stdout)
 
 
 def store_smartctl_metric(base_url, host_id, host_secret, disk):
@@ -15,10 +17,17 @@ def store_smartctl_metric(base_url, host_id, host_secret, disk):
         'host_id': host_id,
         'host_secret': host_secret
     }
-    smartctl_json_string = get_smartctl_data(disk)
+    smartctl_json_map = get_smartctl_data(disk)
+    payload = {}
+    payload['smartctl_json'] = smartctl_json_map
+    payload['hints'] = {}
+    payload['hints']['other_hosts'] = [host_id]
+    payload['hints']['is_backblaze'] = True
+    payload['hints']['backblaze_ts'] = START_TEST_TS
+    payload['hints']['backblaze_failure_label'] = True
+
     print('Sending Data: ')
-    pprint.pprint(json.loads(smartctl_json_string))
-    response = requests.post(base_url + 'store-device-metrics', data=smartctl_json_string, headers=headers)
+    response = requests.post(base_url + 'store-device-metrics', data=json.dumps(payload), headers=headers)
     print('Response from server is: ')
     pprint.pprint(response.json())
 
@@ -39,4 +48,4 @@ def register_host():
 
 
 if __name__ == '__main__':
-    register_host()
+    post_metrics()
