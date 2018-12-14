@@ -34,7 +34,7 @@ class CSVProcessor:
 
     def parse_csv(self, file_name):
         print('\tProcessing File: ' + str(file_name))
-        with open(os.path.join(os.path.join(self.dst_dir, file_name), 'w')) as csvfile:
+        with open(os.path.join(self.dst_dir, file_name), 'w') as csvfile:
             final_rows = []
             fieldnames = ['date', 'serial_number', 'model', 'capacity_bytes', 'failure_backblaze', 'failure_assumption']
             for i in range(1, 256):
