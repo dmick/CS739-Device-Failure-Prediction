@@ -25,7 +25,7 @@ class CSVProcessor:
         self.parse_all_directories(to_process_dirs)
 
     def parse_all_directories(self, to_process_dirs):
-        for dir_path in dirs:
+        for dir_path in to_process_dirs:
             print('Processing Directory: ' + str(dir_path))
             all_files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))]
             csv_files = [os.path.join(dir_path, f) for f in all_files if f.endswith('.csv')]
