@@ -21,8 +21,8 @@ class CSVProcessor:
                 continue
             if dir in self.blacklist_folders:
                 continue
-	    if dir == 'data_Q4_2016':
-            	to_process_dirs.append(abs_path)
+            if dir == 'data_Q4_2016':
+                to_process_dirs.append(abs_path)
         self.parse_all_directories(to_process_dirs)
 
     def parse_all_directories(self, to_process_dirs):
@@ -35,10 +35,10 @@ class CSVProcessor:
 
     def parse_csv(self, src_path, file_name):
         print('\tProcessing File: ' + str(file_name))
-	dir_name = os.path.basename(os.path.normpath(src_path))
+        dir_name = os.path.basename(os.path.normpath(src_path))
         with open(os.path.join(self.dst_dir, dir_name, file_name), 'w') as csvfile:
             final_rows = []
-            fieldnames = ['date', 'serial_number', 'model', 'capacity_bytes', 'failure_backblaze', 'failure_assumption']
+            fieldnames = ['date', 'serial_number', 'model', 'capacity_bytes', 'failure']
             for i in range(1, 256):
                 fieldnames.append('smart_{0}_normalized'.format(str(i)))
                 fieldnames.append('smart_{0}_raw'.format(str(i)))
@@ -57,6 +57,7 @@ class CSVProcessor:
             "serial_number": row["serial_number"],
             "model": row["model"],
             "capacity_bytes": row["capacity_bytes"],
+            "failure": row["failure"],
         }
         for i in range(1, 256):
             col_name = 'smart_{0}_normalized'.format(str(i))
