@@ -21,20 +21,22 @@ class CSVProcessor:
                 continue
             if dir in self.blacklist_folders:
                 continue
-            to_process_dirs.append(abs_path)
+	    if dir == 'data_Q4_2016':
+            	to_process_dirs.append(abs_path)
         self.parse_all_directories(to_process_dirs)
 
     def parse_all_directories(self, to_process_dirs):
         for dir_path in to_process_dirs:
             print('Processing Directory: ' + str(dir_path))
             all_files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))]
-            csv_files = [os.path.join(dir_path, f) for f in all_files if f.endswith('.csv')]
+            csv_files = [f for f in all_files if f.endswith('.csv')]
             for file_name in csv_files:
-                self.parse_csv(file_name)
+                self.parse_csv(dir_path, file_name)
 
-    def parse_csv(self, file_name):
+    def parse_csv(self, src_path, file_name):
         print('\tProcessing File: ' + str(file_name))
-        with open(os.path.join(self.dst_dir, file_name), 'w') as csvfile:
+	dir_name = os.path.basename(os.path.normpath(src_path))
+        with open(os.path.join(self.dst_dir, dir_name, file_name), 'w') as csvfile:
             final_rows = []
             fieldnames = ['date', 'serial_number', 'model', 'capacity_bytes', 'failure_backblaze', 'failure_assumption']
             for i in range(1, 256):
@@ -43,7 +45,7 @@ class CSVProcessor:
 
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-            data = pd.read_csv(file_name)
+            data = pd.read_csv(os.path.join(src_path, file_name))
             data.head()
             for index, row in data.iterrows():
                 final_rows.append(self.get_csv_row(data, row))
