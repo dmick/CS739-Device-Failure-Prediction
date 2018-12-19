@@ -29,6 +29,7 @@ class DataSampler:
                 print('Skipping Dir: ' + str(dir))
                 continue
             to_process_dirs.append(abs_path)
+	print("To process Dirs: "+str(to_process_dirs))
         self.parse_all_directories(to_process_dirs)
         self.write_results()
 
@@ -81,7 +82,7 @@ class DataSampler:
 
     def write_results(self):
         with open(os.path.join(self.dst_dir, self.dst_file), 'w') as csvfile:
-            fieldnames = ['date', 'serial_number', 'failure', 'model', 'capacity_bytes', 'failure']
+            fieldnames = ['date', 'serial_number', 'model', 'capacity_bytes', 'failure']
             for i in range(1, 256):
                 fieldnames.append('smart_{0}_normalized'.format(str(i)))
                 fieldnames.append('smart_{0}_raw'.format(str(i)))
@@ -95,10 +96,10 @@ class DataSampler:
 if __name__ == '__main__':
     sampler = DataSampler(
         '/home/pkapoor/CS739-Device-Failure-Prediction/data/backblaze_processed',
-        '/home/pkapoor/CS739-Device-Failure-Prediction/data/backblaze_ml',
-        'train.csv',
+        '/home/pkapoor/new_disk_mnt/data',
+        'train_Q4_2016.csv',
         blacklist_folders=['data_Q1_2018', 'data_Q2_2018', 'data_Q3_2018', 'data_Q1_2017', 'data_Q2_2017',
-                           'data_Q3_2017', 'data_Q4_2017', 'data_Q1_2016', 'data_Q2_2016', 'data_Q3_2016',
-                           'data_Q4_2016']
+                           'data_Q3_2017', 'data_Q4_2017', 'data_Q1_2016', 'data_Q2_2016',
+                           'data_Q3_2016', '2014', '2013','2015']
     )
     sampler.sample_all()
