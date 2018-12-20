@@ -100,8 +100,8 @@ class DataSampler:
                 fieldnames.append('smart_{0}_raw'.format(str(i)))
             fin_list = self.failed_rows + self.success_rows
             random.shuffle(fin_list)
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
+            writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            writer.writerow(fieldnames)
             writer.writerows(fin_list)
 
 
