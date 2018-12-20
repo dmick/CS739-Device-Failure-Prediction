@@ -29,7 +29,7 @@ class DataSampler:
                 print('Skipping Dir: ' + str(dir))
                 continue
             to_process_dirs.append(abs_path)
-	print("To process Dirs: "+str(to_process_dirs))
+        print("To process Dirs: " + str(to_process_dirs))
         self.parse_all_directories(to_process_dirs)
         self.write_results()
 
@@ -44,17 +44,26 @@ class DataSampler:
 
     def parse_csv(self, file_name):
         print('\tProcessing File: ' + str(file_name))
-        data = pd.read_csv(file_name)
-        data.head()
-        failure_rows = []
-        success_rows = []
-        total_count = 0
-        for index, row in data.iterrows():
-            if row['failure'] == 1:
-                failure_rows.append(self.get_csv_row(data, row))
-            else:
-                success_rows.append(self.get_csv_row(data, row))
-            total_count = total_count + 1
+        with open(file_name, 'r') as csvfile:
+            line_count = 0
+            csv_reader = csv.reader(csvfile, delimiter=',')
+            header_to_index = None
+            failure_rows = []
+            success_rows = []
+            for row in csv_reader:
+                if line_count == 0:
+                    header_to_index = {}
+                    col_index = 0
+                    for col in row:
+                        header_to_index[col] = col_index
+                        col_index = col_index + 1
+                    line_count = line_count + 1
+                else:
+                    if row[4] == '1':
+                        failure_rows.append(self.get_csv_row(header_to_index, row))
+                    else:
+                        success_rows.append(self.get_csv_row(header_to_index, row))
+                    line_count = line_count + 1
         failure_count = len(failure_rows)
         required_success_count = int(self.multiplier * failure_count)
         if required_success_count > len(success_rows):
@@ -63,22 +72,27 @@ class DataSampler:
         self.success_rows.extend(success_rows[1:required_success_count])
         self.failed_rows.extend(failure_rows)
 
-    def get_csv_row(self, data, row):
-        base_row = {
-            "date": row["date"],
-            "serial_number": row["serial_number"],
-            "model": row["model"],
-            "capacity_bytes": row["capacity_bytes"],
-            "failure": row["failure"],
-        }
+    def get_csv_row(self, header_to_index, row):
+        rv = []
+        rv.append(row[0])
+        rv.append(row[1])
+        rv.append(row[2])
+        rv.append(row[3])
+        rv.append(row[4])
         for i in range(1, 256):
             col_name = 'smart_{0}_normalized'.format(str(i))
-            if col_name in data.columns and not math.isnan(row[col_name]):
-                base_row[col_name] = row[col_name]
+            index = header_to_index.get(col_name, -1)
+            if index == -1:
+                rv.append('')
+            else:
+                rv.append(row[index])
             col_name = 'smart_{0}_raw'.format(str(i))
-            if col_name in data.columns and not math.isnan(row[col_name]):
-                base_row[col_name] = row[col_name]
-        return base_row
+            index = header_to_index.get(col_name, -1)
+            if index == -1:
+                rv.append('')
+            else:
+                rv.append(row[index])
+        return rv
 
     def write_results(self):
         with open(os.path.join(self.dst_dir, self.dst_file), 'w') as csvfile:
@@ -95,11 +109,11 @@ class DataSampler:
 
 if __name__ == '__main__':
     sampler = DataSampler(
-        '/home/pkapoor/CS739-Device-Failure-Prediction/data/backblaze_processed',
+        '/home/pkapoor/CS739-Device-Failure-Prediction/data/backblaze',
         '/home/pkapoor/new_disk_mnt/data',
         'train_Q4_2016.csv',
         blacklist_folders=['data_Q1_2018', 'data_Q2_2018', 'data_Q3_2018', 'data_Q1_2017', 'data_Q2_2017',
                            'data_Q3_2017', 'data_Q4_2017', 'data_Q1_2016', 'data_Q2_2016',
-                           'data_Q3_2016', '2014', '2013','2015']
+                           'data_Q3_2016', '2014', '2013', '2015']
     )
     sampler.sample_all()
