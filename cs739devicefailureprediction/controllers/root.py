@@ -39,7 +39,7 @@ class RootController(object):
         smartctl_json = body.get('smartctl_json', {})
         serial_number = smartctl_json.get('serial_number', None)
         if serial_number is not None:
-            serial_number = hashlib.sha224(serial_number)
+            serial_number = hashlib.sha224(serial_number).hexdigest()
         smartctl_json['serial_number'] = serial_number
         body['smartctl_json'] = smartctl_json
         response = {}
