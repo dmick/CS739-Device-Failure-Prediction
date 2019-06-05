@@ -10,7 +10,7 @@ setup:
 	mkdir -p ./data/tmp/ml
 	python setup.py develop
 
-init:
+init: setup
 	pip install -r requirements.txt
 
 run:
